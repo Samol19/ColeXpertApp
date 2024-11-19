@@ -11,34 +11,33 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { RegisterRequest } from '../../../shared/models/register-request.model';
+import { MatRippleModule } from '@angular/material/core';
 
 @Component({
   selector: 'app-register',
   standalone: true,
   imports: [
     CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
     MatButtonModule,
     MatInputModule,
-    MatCardModule,
-    RouterLink,
-    FormsModule,
-    ReactiveFormsModule,
-    MatSnackBarModule,
     MatIconModule,
-    MatTooltipModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatSnackBarModule,
+    MatRippleModule
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
 export class RegisterComponent {
   @ViewChild('fileInput') fileInput!: ElementRef;
-  imagePath: string = 'assets/imagenes/login.png';
 
   registerForm: FormGroup;
   profileImagePreview: string | null = null;
   selectedFile: File | null = null;
   isLoading = false;
+  hidePassword = true;
   img_text: string = 'None';
 
   private fb = inject(FormBuilder);

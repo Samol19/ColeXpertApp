@@ -1,63 +1,85 @@
-<header class="header">
-  <div class="container">
-    <div class="header-content">
-      <a href="index.html" class="logo">
-        <h1 class="sitename">Cole<span>X</span>pert</h1>
-      </a>
-      <nav class="navmenu">
-        <ul>
-          <li><a href="#hero" class="active">Home</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#services">Services</a></li>
-          <li><a href="#features">Features</a></li>
-          <li><a href="#pricing">Pricing</a></li>
-          <li><a href="#contact">Contact</a></li>
-          <li><a href="/auth/login">Login</a></li>
-        </ul>
-      </nav>
-    </div>
-  </div>
-</header>
+<app-navbar></app-navbar>
 
-<main>
-  <section id="hero" class="hero">
-    <div class="container">
-      <div class="hero-content">
-        <div class="hero-text">
-          <h2 class="sitename">Cole<span>X</span>pert</h2>
-          <p>La plataforma de subastas en línea que conecta a compradores y vendedores. Pujar en tiempo real por productos exclusivos y bienes de colección nunca fue tan fácil. Participa en subastas seguras, con pagos directos y consigue lo que deseas al mejor precio. ¡Las mejores oportunidades te esperan!</p>
-          <div class="hero-buttons">
-            <a href="#about" class="btn btn-primary">Get Started</a>
-            <a href="https://www.youtube.com/watch?v=YAgJ9XugGBo&t=59s" class="btn btn-secondary">Watch Video</a>
+    <main>
+      <section id="hero" class="hero">
+        <div class="container">
+          <div class="hero-content">
+            <div class="hero-text">
+              <h1 class="sitename">Cole<span>X</span>pert</h1>
+              <p class="hero-description">
+                Descubre el emocionante mundo de las subastas en línea. Puja en tiempo real por productos exclusivos y coleccionables. ¡Las mejores oportunidades te esperan!
+              </p>
+              <div class="hero-buttons">
+                <a mat-raised-button color="primary" href="#about">Comenzar</a>
+                <a mat-stroked-button color="accent" href="https://www.youtube.com/watch?v=YAgJ9XugGBo&t=59s" target="_blank">
+                  <mat-icon>play_circle_outline</mat-icon> Ver Video
+                </a>
+              </div>
+            </div>
+            <div class="hero-image">
+              <img src="assets/imagenes/landing.png" alt="ColeXpert Subastas en línea">
+            </div>
           </div>
         </div>
-        <div class="hero-image">
-          <img src="assets/imagenes/landing.png" alt="Home Image">
-        </div>
-      </div>
-    </div>
-  </section>
+      </section>
 
-  <section id="about" class="about">
-    <div class="container">
-      <div class="about-content">
-        <div class="about-text">
-          <p class="who-we-are">Quiénes Somos</p>
-          <h3>El grupo 4 XD</h3>
-          <p>En ColeXpert, estamos revolucionando la manera en que las personas compran y venden en línea. Nuestra plataforma ofrece un entorno seguro y dinámico para participar en subastas en tiempo real de productos únicos y bienes de colección. Empoderamos a nuestros usuarios para que tomen decisiones informadas con una experiencia de subasta fluida y pagos directos, creando oportunidades para que compradores y vendedores se conecten y prosperen.</p>
-          <ul>
-            <li>Subastas en tiempo real de una amplia gama de productos y bienes de colección.</li>
-            <li>Plataforma segura con funciones fáciles de usar y opciones de pago directo.</li>
-            <li>Conectando compradores y vendedores de todo el país para oportunidades incomparables.</li>
-          </ul>
-          
+      <section id="features" class="features">
+        <div class="container">
+          <h2>Características Principales</h2>
+          <div class="features-grid">
+            <mat-card>
+              <mat-icon color="primary">gavel</mat-icon>
+              <h3>Subastas en Tiempo Real</h3>
+              <p>Participa en emocionantes subastas con actualizaciones instantáneas.</p>
+            </mat-card>
+            <mat-card>
+              <mat-icon color="primary">verified_user</mat-icon>
+              <h3>Plataforma Segura</h3>
+              <p>Disfruta de un entorno de compra y venta protegido y confiable.</p>
+            </mat-card>
+            <mat-card>
+              <mat-icon color="primary">category</mat-icon>
+              <h3>Amplia Variedad</h3>
+              <p>Encuentra una gran selección de productos únicos y coleccionables.</p>
+            </mat-card>
+            <mat-card>
+              <mat-icon color="primary">payments</mat-icon>
+              <h3>Pagos Directos</h3>
+              <p>Realiza transacciones seguras y rápidas dentro de la plataforma.</p>
+            </mat-card>
+          </div>
+        </div>
+      </section>
 
-          <a href="#" class="read-more">Read More</a>
+      <section id="about" class="about">
+        <div class="container">
+          <div class="about-content">
+            <div class="about-text">
+              <h2>Quiénes Somos</h2>
+              <p>
+                En ColeXpert, estamos revolucionando la manera en que las personas compran y venden en línea. Nuestra plataforma ofrece un entorno seguro y dinámico para participar en subastas en tiempo real de productos únicos y bienes de colección.
+              </p>
+              <ul>
+                <li>Subastas en tiempo real de una amplia gama de productos y bienes de colección.</li>
+                <li>Plataforma segura con funciones fáciles de usar y opciones de pago directo.</li>
+                <li>Conectando compradores y vendedores de todo el país para oportunidades incomparables.</li>
+              </ul>
+              <a mat-stroked-button color="primary" href="#">Leer Más</a>
+            </div>
+            <div class="about-image">
+              <img src="assets/imagenes/logo-color.png" alt="Equipo ColeXpert">
+            </div>
+          </div>
         </div>
-        <div class="about-images">
-          <!-- Add about images here -->
+      </section>
+
+      <section id="cta" class="cta">
+        <div class="container">
+          <h2>¿Listo para comenzar?</h2>
+          <p>Únete a nuestra comunidad de subastadores y encuentra oportunidades únicas.</p>
+          <a mat-raised-button color="accent" routerLink="/auth/register">Regístrate Ahora</a>
         </div>
-      </div>
-    </div>
-  </section>
-</main>
+      </section>
+    </main>
+
+    <app-footer></app-footer>

@@ -1,84 +1,92 @@
 <div class="auction-detail-container" *ngIf="auction && !isLoading && !error">
-    <div class="auction-header">
-      <button mat-icon-button (click)="goBack()" class="back-button" matTooltip="Volver">
-        <mat-icon>arrow_back</mat-icon>
+  <div class="auction-header">
+    <button mat-icon-button (click)="goBack()" class="back-button" matTooltip="Volver">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1 class="auction-title">{{ auction.name }}</h1>
+    <div class="auction-chips">
+      <div class="chip-container">
+        <span class="chip-label">Categoría:</span>
+        <mat-chip color="primary" selected>{{ auction.item.category_name }}</mat-chip>
+      </div>
+      <div class="chip-container">
+        <span class="chip-label">Estado:</span>
+        <mat-chip color="accent" selected>{{ auction.state }}</mat-chip>
+      </div>
+    </div>
+  </div>
+
+  <div class="auction-content">
+    <div class="auction-image-container">
+      <img [src]="getImageSrc(auction.item.img)" [alt]="auction.item.name" class="auction-image">
+      <button mat-icon-button class="favorite-button" (click)="toggleFavorite()" [matTooltip]="isFavorite ? 'Quitar de favoritos' : 'Agregar a favoritos'">
+        <mat-icon [class.favorite]="isFavorite">favorite</mat-icon>
       </button>
-      <h1 class="auction-title">{{ auction.name }}</h1>
-      <div class="auction-chips">
-        <div class="chip-container">
-          <span class="chip-label">Categoría:</span>
-          <mat-chip color="primary" selected>{{ auction.item.category_name }}</mat-chip>
-        </div>
-        <div class="chip-container">
-          <span class="chip-label">Estado:</span>
-          <mat-chip color="accent" selected>{{ auction.state }}</mat-chip>
-        </div>
-      </div>
     </div>
-  
-    <div class="auction-content">
-      <div class="auction-image-container">
-        <img [src]="getImageSrc(auction.item.img)" [alt]="auction.item.name" class="auction-image">
-        <button mat-icon-button class="favorite-button" (click)="toggleFavorite()" [matTooltip]="isFavorite ? 'Quitar de favoritos' : 'Agregar a favoritos'">
-          <mat-icon [class.favorite]="isFavorite">favorite</mat-icon>
-        </button>
-      </div>
-  
-      <div class="auction-details">
-        <mat-card>
-          <mat-card-content>
-            <div class="detail-row">
-              <mat-icon>schedule</mat-icon>
-              <span><strong>Tiempo restante:</strong> {{ timeRemaining }}</span>
-            </div>
-            <div class="detail-row">
-              <mat-icon>attach_money</mat-icon>
-              <span><strong>Precio actual:</strong> S/.{{ currentBid | number:'1.2-2' }}</span>
-            </div>
-            <div class="detail-row">
-              <mat-icon>gavel</mat-icon>
-              <span><strong>Precio inicial:</strong> S/.{{ auction.item.init_price | number:'1.2-2' }}</span>
-            </div>
-            <div class="detail-row">
-              <mat-icon>info</mat-icon>
-              <span><strong>Estado:</strong> {{ auction.state }}</span>
-            </div>
-          </mat-card-content>
-          <mat-card-actions>
-            <button mat-raised-button color="primary" (click)="placeBid()"  class="bid-button" [class.hammering]="isHammering">
-              <mat-icon>gavel</mat-icon>
-              Hacer una oferta
-            </button>
-          </mat-card-actions>
-        </mat-card>
-      </div>
+
+    <div class="auction-details">
+      <mat-card>
+        <mat-card-content>
+          <div class="detail-row">
+            <mat-icon>schedule</mat-icon>
+            <span><strong>Tiempo restante:</strong> {{ timeRemaining }}</span>
+          </div>
+          <div class="detail-row">
+            <mat-icon>attach_money</mat-icon>
+            <span><strong>Precio actual:</strong> S/.{{ highestBid | number:'1.2-2' }}</span>
+          </div>
+          <div class="detail-row">
+            <mat-icon>gavel</mat-icon>
+            <span><strong>Precio inicial:</strong> S/.{{ auction.item.init_price | number:'1.2-2' }}</span>
+          </div>
+          <div class="detail-row">
+            <mat-icon>info</mat-icon>
+            <span><strong>Estado:</strong> {{ auction.state }}</span>
+          </div>
+          <div class="detail-row" *ngIf="userLastBid">
+            <mat-icon>person</mat-icon>
+            <span><strong>Tu última puja:</strong> S/.{{ userLastBid | number:'1.2-2' }}</span>
+          </div>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-raised-button color="primary" (click)="placeBid()" class="bid-button" [class.hammering]="isHammering">
+            <mat-icon>gavel</mat-icon>
+            Hacer una oferta
+          </button>
+          <button mat-raised-button color="accent" (click)="goToMyBids()" class="my-bids-button">
+            <mat-icon>list</mat-icon>
+            Mis Pujas
+          </button>
+        </mat-card-actions>
+      </mat-card>
     </div>
-  
-    <mat-card class="item-details">
-      <mat-card-header>
-        <mat-card-title>Información del Artículo</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <h3>{{ auction.item.name }}</h3>
-        <p class="item-description">{{ auction.item.description }}</p>
-      </mat-card-content>
-    </mat-card>
-  
-    <mat-card class="auction-description">
-      <mat-card-header>
-        <mat-card-title>Descripción de la Subasta</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <p class="auction-description-text">{{ auction.description }}</p>
-      </mat-card-content>
-    </mat-card>
   </div>
-  
-  <div *ngIf="isLoading" class="loading-spinner">
-    <mat-spinner></mat-spinner>
-  </div>
-  
-  <div *ngIf="error" class="error-message">
-    <mat-icon>error</mat-icon>
-    <span>{{ error }}</span>
-  </div>
+
+  <mat-card class="item-details">
+    <mat-card-header>
+      <mat-card-title>Información del Artículo</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <h3>{{ auction.item.name }}</h3>
+      <p class="item-description">{{ auction.item.description }}</p>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="auction-description">
+    <mat-card-header>
+      <mat-card-title>Descripción de la Subasta</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p class="auction-description-text">{{ auction.description }}</p>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div *ngIf="isLoading" class="loading-spinner">
+  <mat-spinner></mat-spinner>
+</div>
+
+<div *ngIf="error" class="error-message">
+  <mat-icon>error</mat-icon>
+  <span>{{ error }}</span>
+</div>

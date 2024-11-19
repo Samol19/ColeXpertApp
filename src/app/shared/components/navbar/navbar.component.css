@@ -289,6 +289,65 @@
   .nav-link:hover {
     color: #2dda2d;
   }
+
+
+  .nav-menu {
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .nav-link {
+    color: #333;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    transition: color 0.3s ease;
+  }
+  
+  .nav-link:hover {
+    color: #4caf50;
+  }
+  
+  .navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .action-btn {
+    transition: all 0.3s ease;
+  }
+  
+  .profile-img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .notifications-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .notification-time {
+    font-size: 0.8rem;
+    color: #666;
+  }
+  
+  @media (max-width: 768px) {
+    .nav-menu {
+      display: none;
+    }
+    
+    .navbar-actions {
+      gap: 0.5rem;
+    }
+  }
   
   @keyframes slideIn {
     from {

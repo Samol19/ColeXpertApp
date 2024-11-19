@@ -1,5 +1,5 @@
 <div class="container">
-  <form [formGroup]="ofertaForm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
     <div class="form-layout">
       <!-- Left Column -->
       <div class="left-column">
@@ -7,6 +7,7 @@
           <h2>Título</h2>
           <mat-form-field appearance="outline" class="full-width">
             <textarea matInput formControlName="name" rows="4" placeholder="Ingresar texto..."></textarea>
+            <mat-error *ngIf="itemForm.get('name')?.hasError('required')">El título es requerido</mat-error>
           </mat-form-field>
         </div>
 
@@ -14,6 +15,7 @@
           <h2>Descripción</h2>
           <mat-form-field appearance="outline" class="full-width">
             <textarea matInput formControlName="description" rows="4" placeholder="Ingresar texto..."></textarea>
+            <mat-error *ngIf="itemForm.get('description')?.hasError('required')">La descripción es requerida</mat-error>
           </mat-form-field>
         </div>
       </div>
@@ -27,7 +29,7 @@
           </button>
           <button mat-flat-button color="primary" type="submit">
             <mat-icon>save</mat-icon>
-            {{ isEditMode ? 'Actualizar Subasta' : 'Crear Item' }}
+            Crear Item
           </button>
           <button mat-flat-button color="warn" type="button" (click)="salir()">
             <mat-icon>exit_to_app</mat-icon>
@@ -40,24 +42,32 @@
             <mat-label>Puja inicial</mat-label>
             <mat-icon matPrefix>attach_money</mat-icon>
             <input matInput formControlName="init_price" type="number" placeholder="$/5">
+            <mat-error *ngIf="itemForm.get('init_price')?.hasError('required')">El precio inicial es requerido</mat-error>
+            <mat-error *ngIf="itemForm.get('init_price')?.hasError('min')">El precio debe ser mayor o igual a 0</mat-error>
           </mat-form-field>
 
-          <div>
-            <mat-form-field appearance="outline">
-              <mat-label>Categoria</mat-label>
-              <mat-icon matPrefix>category</mat-icon>
-              <mat-select formControlName="category_id">
-                <mat-option *ngFor="let category of categories" [value]="category.id">
-                  {{ category.name }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Categoria</mat-label>
+            <mat-icon matPrefix>category</mat-icon>
+            <mat-select formControlName="category_id">
+              <mat-option *ngFor="let category of categories" [value]="category.id">
+                {{ category.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="itemForm.get('category_id')?.hasError('required')">La categoría es requerida</mat-error>
+          </mat-form-field>
+
+          <div class="image-upload-section">
+            <button mat-stroked-button class="upload-button" type="button" (click)="imageInput.click()">
+              <mat-icon>image</mat-icon>
+              {{ imagePreview ? 'Cambiar imagen' : 'Subir imagen' }}
+            </button>
+            <input type="file" #imageInput (change)="onFileSelected($event)" accept="image/*" style="display: none;">
           </div>
-          <button mat-stroked-button class="upload-button" type="button" (click)="imageInput.click()">
-            <mat-icon>image</mat-icon>
-            Subir imagen
-          </button>
-          <input type="file" #imageInput (change)="onFileSelected($event)" accept="image/*" style="display: none;">
+
+          <div *ngIf="imagePreview" class="image-preview-container">
+            <img [src]="imagePreview" alt="Vista previa de la imagen" class="image-preview">
+          </div>
         </div>
       </div>
     </div>

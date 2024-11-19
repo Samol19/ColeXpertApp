@@ -1,81 +1,72 @@
-<section class="register-container">
+<div class="register-container">
     <div class="register-card">
+      <div class="register-header">
+        <h1 class="register-title">Únete a ColeXpert</h1>
+        <p class="register-subtitle">Descubre subastas en tiempo real de tus items más buscados!</p>
+      </div>
+      <div class="register-image-container">
+        <div class="image-wrapper">
+          <img src="assets/imagenes/register.png" alt="ColeXpert Auctions" class="background-image">
+        </div>
+      </div>
+      <div class="register-form">
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+          <mat-form-field appearance="outline">
+            <mat-label>Nombre</mat-label>
+            <input matInput formControlName="name" placeholder="Tu nombre completo">
+            <mat-icon matSuffix>person</mat-icon>
+            <mat-error *ngIf="registerForm.get('name')?.hasError('required')">El nombre es requerido</mat-error>
+          </mat-form-field>
 
-        <div class="register-image" [ngStyle]="{ 'background-image': 'url(' + (imagePath) + ')' }">
-            <div class="register-overlay">
-              <h3 class="register-text">Únete a ColeXpert</h3>
-              <p class="register-description">Descubre subastas en tiempo real de tus items mas buscados!!.</p>
+          <mat-form-field appearance="outline">
+            <mat-label>Correo Electrónico</mat-label>
+            <input matInput formControlName="email" type="email" placeholder="tu.correo@ejemplo.com">
+            <mat-icon matSuffix>email</mat-icon>
+            <mat-error *ngIf="registerForm.get('email')?.hasError('required')">El correo es requerido</mat-error>
+            <mat-error *ngIf="registerForm.get('email')?.hasError('email')">Ingresa un correo válido</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Contraseña</mat-label>
+            <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" placeholder="Crea una contraseña segura">
+            <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword" type="button">
+              <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <mat-error *ngIf="registerForm.get('password')?.hasError('required')">La contraseña es requerida</mat-error>
+            <mat-error *ngIf="registerForm.get('password')?.hasError('minlength')">La contraseña debe tener al menos 6 caracteres</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Dirección</mat-label>
+            <input matInput formControlName="adress" placeholder="Tu dirección actual">
+            <mat-icon matSuffix>home</mat-icon>
+            <mat-error *ngIf="registerForm.get('adress')?.hasError('required')">La dirección es requerida</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Celular</mat-label>
+            <input matInput formControlName="phone" type="tel" placeholder="Tu número de celular">
+            <mat-icon matSuffix>phone</mat-icon>
+            <mat-error *ngIf="registerForm.get('phone')?.hasError('required')">El número de celular es requerido</mat-error>
+          </mat-form-field>
+
+          <div class="profile-upload" matRipple [matRippleColor]="'rgba(76, 175, 80, 0.1)'" (click)="fileInput.click()">
+            <input #fileInput type="file" (change)="onFileSelected($event)" accept="image/*" hidden>
+            <div class="avatar" *ngIf="profileImagePreview; else defaultAvatar">
+              <img [src]="profileImagePreview" alt="Profile Picture" class="avatar-image">
             </div>
-        </div>
+            <ng-template #defaultAvatar>
+              <mat-icon class="avatar-icon">add_a_photo</mat-icon>
+            </ng-template>
+            <span class="upload-text">{{ profileImagePreview ? 'Cambiar foto' : 'Escoge tu foto de perfil' }}</span>
+          </div>
 
-        <div class="register-form">
-            <h2>Crea tu cuenta</h2>
-            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-
-                <div class="profile-picture-section">
-                    <ng-container *ngIf="!profileImagePreview; else profilePreview">
-                      <button type="button" (click)="fileInput.click()" class="upload-btn">
-                        <mat-icon>add_a_photo</mat-icon>
-                        <span>Escoge tu foto de perfil</span>
-                      </button>
-                    </ng-container>
-                    <ng-template #profilePreview>
-                      <div class="avatar">
-                        <img [src]="profileImagePreview" alt="Foto de perfil" class="avatar-image">
-                        <div class="avatar-overlay" (click)="fileInput.click()">
-                          <mat-icon>edit</mat-icon>
-                        </div>
-                      </div>
-                    </ng-template>
-                    <input #fileInput type="file" hidden (change)="onFileSelected($event)" accept="image/*">
-                </div>
-
-                <div class="form-row">
-                    <mat-form-field class="form-field">
-                        <mat-label>Nombre</mat-label>
-                        <input matInput formControlName="name" placeholder="Tu nombre">
-                        <mat-icon matSuffix>person</mat-icon>
-                        <mat-error *ngIf="controlHasError('name', 'required')">Este campo es obligatorio</mat-error>
-                    </mat-form-field>
-
-                    <mat-form-field class="form-field">
-                        <mat-label>Correo Electrónico</mat-label>
-                        <input matInput formControlName="email" type="email" placeholder="tu.correo@universidad.edu">
-                        <mat-icon matSuffix>email</mat-icon>
-                        <mat-error *ngIf="controlHasError('email', 'required')">Este campo es obligatorio</mat-error>
-                        <mat-error *ngIf="controlHasError('email', 'email')">Introduce un correo electrónico válido</mat-error>
-                    </mat-form-field>
-                </div>
-
-                <mat-form-field class="form-field">
-                    <mat-label>Contraseña</mat-label>
-                    <input matInput formControlName="password" type="password" placeholder="Crea una contraseña segura">
-                    <mat-icon matSuffix>lock</mat-icon>
-                    <mat-error *ngIf="controlHasError('password', 'required')">Este campo es obligatorio</mat-error>
-                </mat-form-field>
-
-                <mat-form-field class="form-field">
-                    <mat-label>Direccion</mat-label>
-                    <input matInput formControlName="adress" placeholder="Direccion actual">
-                    <mat-icon matSuffix>location_on</mat-icon>
-                    <mat-error *ngIf="controlHasError('adress', 'required')">Este campo es obligatorio</mat-error>
-                </mat-form-field>
-
-                <mat-form-field class="form-field">
-                    <mat-label>Celular</mat-label>
-                    <input matInput formControlName="phone" placeholder="Numero de celular" type="number" step="1">
-                    <mat-icon matSuffix>call</mat-icon>
-                    <mat-error *ngIf="controlHasError('phone', 'required')">Este campo es obligatorio</mat-error>
-                </mat-form-field>
-
-                <button mat-raised-button color="primary" class="submit-button" type="submit" [disabled]="registerForm.invalid || isLoading">
-                    <span *ngIf="!isLoading">Unirme a ColeXpert</span>
-                    <mat-spinner diameter="24" *ngIf="isLoading"></mat-spinner>
-                </button>
-
-            </form>
-            <p class="login-link">¿Ya tienes una cuenta? <a routerLink="/auth/login">Inicia sesión aquí</a></p>
-        </div>
-
+          <button mat-raised-button color="primary" class="submit-button" type="submit" [disabled]="registerForm.invalid || isLoading">
+            <span *ngIf="!isLoading">Unirme a ColeXpert</span>
+            <mat-spinner diameter="24" *ngIf="isLoading"></mat-spinner>
+          </button>
+        </form>
+        <p class="login-link">¿Ya tienes una cuenta? <a routerLink="/auth/login">Inicia sesión aquí</a></p>
+      </div>
     </div>
-</section>
+  </div>

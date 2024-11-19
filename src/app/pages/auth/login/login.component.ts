@@ -11,29 +11,27 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../../core/services/auth.service';
 import { AuthRequest } from '../../../shared/models/auth-request.model';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatRippleModule } from '@angular/material/core';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    MatInputModule,
-    MatCardModule,
-    MatSnackBarModule,
-    MatButtonModule,
-    MatProgressSpinnerModule,
-    MatTooltipModule,
-    MatIconModule,
     CommonModule,
-    RouterLink
+    ReactiveFormsModule,
+    RouterLink,
+    MatButtonModule,
+    MatInputModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatSnackBarModule,
+    MatRippleModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
-
-  imagePath: string = 'assets/imagenes/login.png';
 
   loginForm:FormGroup;
   hidePassword = true;
@@ -91,10 +89,14 @@ export class LoginComponent {
     const userRole = this.authService.getUserRole();
     
     if (userRole === this.ADMIN_ROLE || userRole === this.USER_ROLE) {
-      this.router.navigate(["/home"]);
+      this.router.navigate(["/home/catalog"]);
     } else {
       this.router.navigate(['/auth/login']);
     }
+  }
+
+  openRegister(): void {
+    this.router.navigate(['/auth/register']);
   }
 
   private showSnackBar(message: string): void {

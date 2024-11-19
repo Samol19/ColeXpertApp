@@ -1,12 +1,33 @@
-<h2 mat-dialog-title>Hacer una oferta</h2>
+<h2 mat-dialog-title>Hacer una oferta para {{ data.auctionName }}</h2>
     <mat-dialog-content>
-      <p>Precio actual: S/.{{ data.currentBid | number:'1.2-2' }}</p>
-      <mat-form-field>
+      <div class="bid-info">
+        <p>Precio actual: S/.{{ data.currentBid | number:'1.2-2' }}</p>
+        <p *ngIf="data.userLastBid">Tu última oferta: S/.{{ data.userLastBid | number:'1.2-2' }}</p>
+        <p class="min-bid-info">Oferta mínima: S/.{{ minBidAmount | number:'1.2-2' }}</p>
+      </div>
+      <mat-form-field appearance="outline">
         <mat-label>Tu oferta (S/.)</mat-label>
-        <input matInput type="number" [(ngModel)]="bidAmount" min="{{ data.currentBid + 1 }}" step="1">
+        <input 
+          matInput 
+          type="number" 
+          [(ngModel)]="bidAmount" 
+          [min]="minBidAmount"
+          step="1"
+          (input)="validateBidAmount($event)"
+        >
+        <mat-error *ngIf="!isValidBid()">
+          La oferta debe ser mayor a S/.{{ minBidAmount | number:'1.2-2' }}
+        </mat-error>
       </mat-form-field>
     </mat-dialog-content>
-    <mat-dialog-actions>
+    <mat-dialog-actions align="end">
       <button mat-button (click)="onCancel()">Cancelar</button>
-      <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!isValidBid()">Confirmar oferta</button>
+      <button 
+        mat-raised-button 
+        color="primary" 
+        (click)="onSubmit()" 
+        [disabled]="!isValidBid()"
+      >
+        Confirmar oferta
+      </button>
     </mat-dialog-actions>

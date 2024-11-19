@@ -2,7 +2,7 @@ import { MaterialModule } from '../../../material/material.module';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -13,6 +13,11 @@ import { StorageService } from '../../../core/services/storage.service';
 import { CategoryService } from '../../../core/services/category.service';
 import { Category } from '../../../shared/models/category-response.model';
 import { CommonModule } from '@angular/common';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-crear-subasta',
@@ -22,37 +27,36 @@ import { CommonModule } from '@angular/common';
     ReactiveFormsModule,
     MatCardModule,
     MatFormFieldModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MaterialModule,
-    MatOption
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSnackBarModule
   ],
   templateUrl: './crear-subasta.component.html',
   styleUrls: ['./crear-subasta.component.css']
 })
 export class CrearItemComponent implements OnInit {
-  ofertaForm!: FormGroup;
-  isEditMode: boolean = false;
+  itemForm!: FormGroup;
   categories: Category[] = [];
+  imagePreview: string | null = null;
 
   constructor(
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
     private router: Router,
-    private route: ActivatedRoute,
     private itemService: ItemService,
     private storageService: StorageService,
     private categoryService: CategoryService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.initForm();
     this.loadCategories();
-    this.isEditMode = false;
   }
 
   private initForm(): void {
-    this.ofertaForm = this.fb.group({
+    this.itemForm = this.fb.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
       img: [''],
@@ -66,7 +70,6 @@ export class CrearItemComponent implements OnInit {
     this.categoryService.getCategories().subscribe({
       next: (categories) => {
         this.categories = categories;
-        console.log(categories);
       },
       error: (error) => {
         console.error('Error loading categories:', error);
@@ -76,13 +79,13 @@ export class CrearItemComponent implements OnInit {
   }
 
   onSubmit(): void {
-    const userid = this.storageService.getAuthData()?.user_id;
-    if (userid) {
-      this.ofertaForm.patchValue({ user_id: userid });
-    }
-  
-    if (this.ofertaForm.valid) {
-      this.itemService.createItem(this.ofertaForm.value).subscribe({
+    if (this.itemForm.valid) {
+      const userId = this.storageService.getAuthData()?.user_id;
+      if (userId) {
+        this.itemForm.patchValue({ user_id: userId });
+      }
+
+      this.itemService.createItem(this.itemForm.value).subscribe({
         next: (response) => {
           this.showSnackBar('Ítem creado exitosamente');
           this.router.navigate(['/home']);
@@ -97,31 +100,31 @@ export class CrearItemComponent implements OnInit {
     }
   }
 
+  onFileSelected(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreview = reader.result as string;
+        this.itemForm.patchValue({
+          img: reader.result
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
   vistaPrevia(): void {
-    console.log('Vista previa', this.ofertaForm.value);
+    console.log('Vista previa', this.itemForm.value);
   }
 
   salir(): void {
-    this.router.navigate(['']);
+    this.router.navigate(['/home']);
   }
 
   private showSnackBar(message: string): void {
     this.snackBar.open(message, 'Cerrar', {
       duration: 3000,
     });
-  }
-
-  onFileSelected(event: Event): void {
-    const file = (event.target as HTMLInputElement).files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const base64String = reader.result as string;
-        this.ofertaForm.patchValue({
-          img: base64String
-        });
-      };
-      reader.readAsDataURL(file);
-    }
   }
 }

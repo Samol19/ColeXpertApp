@@ -1,43 +1,39 @@
-<section class="login-container">
-
+<div class="login-container">
     <div class="login-card">
-
-        <div class="login-image" [ngStyle]="{ 'background-image': 'url(' + imagePath + ')' }">
-            <div class="login-overlay">
-                <h3 class="login-text">Bienvenido a ColeXpert</h3>
-                <p class="login-description">Inicia sesión y encuentra las subastas mas interesantes del Pais!!</p>
-            </div>
+      <div class="login-header">
+        <h1 class="login-title">Bienvenido a ColeXpert</h1>
+        <p class="login-subtitle">Inicia sesión para acceder a tus subastas favoritas</p>
+      </div>
+      <div class="login-image-container">
+        <div class="image-wrapper">
+          <img src="assets/imagenes/login.png" alt="ColeXpert Auctions" class="background-image">
         </div>
+      </div>
+      <div class="login-form">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <mat-form-field appearance="outline">
+            <mat-label>Correo Electrónico</mat-label>
+            <input matInput formControlName="email" type="email" placeholder="tu.correo@ejemplo.com">
+            <mat-icon matSuffix>email</mat-icon>
+            <mat-error *ngIf="loginForm.get('email')?.hasError('required')">El correo es requerido</mat-error>
+            <mat-error *ngIf="loginForm.get('email')?.hasError('email')">Ingresa un correo válido</mat-error>
+          </mat-form-field>
 
-        <div class="login-form">
-            <h2>Iniciar Sesión</h2>
-            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-                <mat-form-field class="form-field">
-                    <mat-label>Correo Electrónico</mat-label>
-                    <input matInput formControlName="email" type="email" placeholder="Correo Electrónico">
-                    <mat-icon matSuffix>email</mat-icon>
-                    <mat-error *ngIf="controlHasError('email', 'required')">Campo requerido</mat-error>
-                    <mat-error *ngIf="controlHasError('email', 'email')">Correo Electrónico no válido</mat-error>
-                </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Contraseña</mat-label>
+            <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" placeholder="Tu contraseña">
+            <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword" type="button">
+              <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <mat-error *ngIf="loginForm.get('password')?.hasError('required')">La contraseña es requerida</mat-error>
+          </mat-form-field>
 
-                <mat-form-field class="form-field">
-                    <mat-label>Contraseña</mat-label>
-                    <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" placeholder="Ingresa tu contraseña">
-                    <button mat-icon-button matSuffix (click)="togglePasswordVisibility()" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword">
-                      <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
-                    </button>
-                    <mat-error *ngIf="controlHasError('password', 'required')">Este campo es obligatorio</mat-error>
-                </mat-form-field>
-
-                <button mat-raised-button color="primary" class="submit-button" type="submit" [disabled]="loginForm.invalid || isLoading">
-                    <span *ngIf="!isLoading">Iniciar Sesión</span>
-                    <mat-spinner diameter="24" *ngIf="isLoading"></mat-spinner>
-                </button>
-            </form>
-
-            <p class="register-link">¿No tienes una cuenta? <a routerLink="/auth/register">Regístrate aquí</a></p>
-        </div>
-
+          <button mat-raised-button class="submit-button" type="submit" [disabled]="loginForm.invalid || isLoading">
+            <span *ngIf="!isLoading">Iniciar Sesión</span>
+            <mat-spinner diameter="24" *ngIf="isLoading"></mat-spinner>
+          </button>
+        </form>
+        <p class="register-link">¿No tienes una cuenta? <a routerLink="/auth/register">Regístrate aquí</a></p>
+      </div>
     </div>
-
-</section>
+  </div>

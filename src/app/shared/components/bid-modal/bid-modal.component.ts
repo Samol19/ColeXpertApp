@@ -8,6 +8,12 @@ import { MatInputModule } from '@angular/material/input';
 import { BidRequest } from '../../models/bid-request.model';
 import { BidsService } from '../../../core/services/bids.service';
 
+interface BidModalData {
+  auctionName: string;
+  currentBid: number;
+  userLastBid: number | null;
+}
+
 @Component({
   selector: 'app-bid-modal',
   standalone: true,
@@ -24,13 +30,28 @@ import { BidsService } from '../../../core/services/bids.service';
 })
 export class BidModalComponent {
   bidAmount: number;
+  minBidAmount: number;
 
   constructor(
     public dialogRef: MatDialogRef<BidModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { auctionId: number, currentBid: number },
-    private bidService: BidsService
+    @Inject(MAT_DIALOG_DATA) public data: BidModalData
   ) {
-    this.bidAmount = data.currentBid + 1;
+    // Set minimum bid amount to current bid + 1
+    this.minBidAmount = this.data.currentBid + 1;
+    this.bidAmount = this.minBidAmount;
+  }
+
+  validateBidAmount(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const value = Number(input.value);
+    
+    if (value < this.minBidAmount) {
+      this.bidAmount = this.minBidAmount;
+    }
+  }
+
+  isValidBid(): boolean {
+    return this.bidAmount >= this.minBidAmount;
   }
 
   onCancel(): void {
@@ -39,23 +60,8 @@ export class BidModalComponent {
 
   onSubmit(): void {
     if (this.isValidBid()) {
-      const bidRequest: BidRequest = {
-        amount: this.bidAmount,
-        auction_id: this.data.auctionId
-      };
-      this.bidService.createBid(bidRequest).subscribe({
-        next: (response) => {
-          this.dialogRef.close(response);
-        },
-        error: (error) => {
-          console.error('Error al realizar la oferta:', error);
-          // Aquí puedes manejar el error, por ejemplo, mostrando un mensaje al usuario
-        }
-      });
+      // Return only the amount, let parent component handle the bid creation
+      this.dialogRef.close({ amount: this.bidAmount });
     }
-  }
-
-  isValidBid(): boolean {
-    return this.bidAmount > this.data.currentBid;
   }
 }

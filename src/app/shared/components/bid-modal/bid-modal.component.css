@@ -1,3 +1,21 @@
 mat-form-field {
-    width: 100%;
-  }
+  width: 100%;
+}
+
+.bid-info {
+  margin-bottom: 1rem;
+}
+
+.bid-info p {
+  margin: 0.5rem 0;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.min-bid-info {
+  color: #2e7d32 !important;
+  font-weight: 500;
+}
+
+mat-dialog-actions {
+  padding: 1rem;
+}

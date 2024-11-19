@@ -1,11 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { AuthResponse } from '../../models/auth-response.model';
 import { StorageService } from '../../../core/services/storage.service';
-import { Observable } from 'rxjs';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import {MatMenuModule} from '@angular/material/menu';
+import { MatBadgeModule } from '@angular/material/badge';
 
 interface Notification {
   id: number;
@@ -17,66 +20,60 @@ interface Notification {
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatSnackBarModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    MatSnackBarModule,
+    MatIconModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatBadgeModule
+  ],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
-  private SnackBar = inject(MatSnackBar);
   private storageService = inject(StorageService);
-  user: AuthResponse | null = null;
-  
-  img: string = '';
-  isStudent: boolean = false;
-  isAuthenticated: boolean = false;
-  cartItemsCount: number = 0;
 
-  notificationCount: number = 0;
-  showNotifications: boolean = false;
-  notifications: Notification[] = [];
+  isAuthenticated = false;
+  img = '';
+  notificationCount = 0;
+  notifications: { id: number; message: string; time: string; read: boolean }[] = [];
 
   ngOnInit(): void {
-    this.isAuthenticated = true;
-
-
-    // Intentar obtener los datos directamente desde el localStorage
-    const storedUser = localStorage.getItem('coleXpert_auth');
-    if (storedUser) {
-      this.user = JSON.parse(storedUser);  // Deserializar el JSON del localStorage
-this.img = this.user?.user_img?.startsWith('data:image') 
-  ? this.user.user_img 
-  : `data:image/png;base64,${this.user?.user_img}`;
-    } else {
-      this.loadUserProfile();  // Si no se encuentra el usuario, lo cargas desde el servicio
-    }
-
-
+    this.checkAuthentication();
     this.loadUserProfile();
-    this.updateCartItemsCount();
     this.loadNotifications();
   }
 
+  checkAuthentication(): void {
+    const storedUser = this.storageService.getAuthData();
+    this.isAuthenticated = !!storedUser;
+    if (storedUser) {
+      this.img = storedUser.user_img?.startsWith('data:image') 
+        ? storedUser.user_img 
+        : `data:image/png;base64,${storedUser.user_img}`;
+    }
+  }
+
   loadUserProfile(): void {
-    // Suponiendo que authService.getUser() devuelve un Observable
     this.authService.getUser().subscribe({
-      next: (user: AuthResponse| null) => {
-        this.user = user;
-        console.log('User profile loaded:', this.user);
+      next: (user) => {
+        if (user) {
+          this.isAuthenticated = true;
+          this.img = user.user_img?.startsWith('data:image') 
+            ? user.user_img 
+            : `data:image/png;base64,${user.user_img}`;
+        }
       },
-      error: (err) => {
-        console.error('Error loading user profile', err);
-      }
+      error: (err) => console.error('Error loading user profile', err)
     });
   }
 
-  updateCartItemsCount(): void {
-    // Lógica para actualizar el número de elementos en el carrito
-  }
-
   loadNotifications(): void {
-    // Lógica para cargar las notificaciones
+    // Implement notification loading logic here
   }
 
   logout(): void {
@@ -88,7 +85,12 @@ this.img = this.user?.user_img?.startsWith('data:image')
   openCrearSubasta(): void {
     this.router.navigate(['home/create']);
   }
+
   openCrearItem(): void {
     this.router.navigate(['home/create-item']);
+  }
+
+  markAllAsRead(): void {
+    // Implement mark all as read logic here
   }
 }
