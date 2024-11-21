@@ -89,7 +89,7 @@ export class CrearSubastaComponent implements OnInit {
         this.auctionService.createAuction(auctionData).subscribe({
           next: () => {
             this.showSnackBar('Subasta creada exitosamente');
-            this.router.navigate(['/home']);
+            this.router.navigate(['/home/catalog']);
           },
           error: (err) => {
             console.error(err);

@@ -1,4 +1,4 @@
-<nav class="navbar-wrapper">
+<nav class="navbar-wrapper" [class.mobile-open]="isMenuOpen">
   <div class="navbar-container">
     <div class="navbar-content">
       <a class="navbar-logo" [routerLink]="isAuthenticated ? '/home/catalog' : '/'">
@@ -8,24 +8,26 @@
       </a>
       
       <div class="navbar-right">
-        @if (!isAuthenticated) {
-          <ul class="nav-menu">
+        <ng-container *ngIf="!isAuthenticated">
+          <ul class="nav-menu" [class.mobile-hidden]="isMobile">
             <li><a href="#hero" class="nav-link">Home</a></li>
             <li><a href="#features" class="nav-link">Features</a></li>
             <li><a href="#about" class="nav-link">About</a></li>
             <li><a href="#contact" class="nav-link">Contact</a></li>
             <li><a routerLink="/auth/login" class="nav-link">Login</a></li>
           </ul>
-        } @else {
-          <div class="navbar-actions">
+        </ng-container>
+        
+        <ng-container *ngIf="isAuthenticated">
+          <div class="navbar-actions" [class.mobile-hidden]="isMobile">
             <button mat-raised-button color="primary" class="action-btn" (click)="openCrearItem()">
               <mat-icon>add</mat-icon>
-              <span>Crear Item</span>
+              <span class="button-text">Crear Item</span>
             </button>
 
             <button mat-raised-button color="accent" class="action-btn" (click)="openCrearSubasta()">
               <mat-icon>gavel</mat-icon>
-              <span>Crear Subasta</span>
+              <span class="button-text">Crear Subasta</span>
             </button>
 
             <button mat-icon-button [matMenuTriggerFor]="notificationMenu" class="action-btn">
@@ -40,27 +42,76 @@
               <mat-icon>exit_to_app</mat-icon>
             </button>
           </div>
-        }
+        </ng-container>
       </div>
+
+      <!-- Hamburger menu for mobile -->
+      <button mat-icon-button class="menu-toggle" (click)="toggleMenu()" *ngIf="isMobile">
+        <mat-icon>{{ isMenuOpen ? 'close' : 'menu' }}</mat-icon>
+      </button>
     </div>
   </div>
 </nav>
 
+<!-- Mobile menu -->
+<div class="mobile-menu" [class.open]="isMenuOpen" *ngIf="isMobile">
+  <ng-container *ngIf="!isAuthenticated">
+    <button mat-button (click)="navigateTo('/')">
+      <mat-icon>home</mat-icon>
+      Home
+    </button>
+    <button mat-button (click)="navigateTo('/#features')">
+      <mat-icon>star</mat-icon>
+      Features
+    </button>
+    <button mat-button (click)="navigateTo('/#about')">
+      <mat-icon>info</mat-icon>
+      About
+    </button>
+    <button mat-button (click)="navigateTo('/#contact')">
+      <mat-icon>contact_mail</mat-icon>
+      Contact
+    </button>
+    <button mat-button (click)="navigateTo('/auth/login')">
+      <mat-icon>login</mat-icon>
+      Login
+    </button>
+  </ng-container>
+  
+  <ng-container *ngIf="isAuthenticated">
+    <button mat-button (click)="openCrearItem()">
+      <mat-icon>add</mat-icon>
+      Crear Item
+    </button>
+    <button mat-button (click)="openCrearSubasta()">
+      <mat-icon>gavel</mat-icon>
+      Crear Subasta
+    </button>
+    <button mat-button routerLink="/profile" (click)="closeMenu()">
+      <mat-icon>person</mat-icon>
+      Profile
+    </button>
+    <button mat-button (click)="logout()">
+      <mat-icon>exit_to_app</mat-icon>
+      Logout
+    </button>
+  </ng-container>
+</div>
+
 <mat-menu #notificationMenu="matMenu">
   <div class="notifications-header">
     <h3>Notificaciones</h3>
-    @if (notifications.length > 0) {
-      <button mat-button color="primary" (click)="markAllAsRead()">Marcar todo como leído</button>
-    }
+    <button mat-button color="primary" (click)="markAllAsRead()" *ngIf="notifications.length > 0">
+      Marcar todo como leído
+    </button>
   </div>
-  @if (notifications.length > 0) {
-    @for (notification of notifications; track notification.id) {
-      <button mat-menu-item [class.unread]="!notification.read">
-        <span>{{notification.message}}</span>
-        <span class="notification-time">{{notification.time}}</span>
-      </button>
-    }
-  } @else {
+  <ng-container *ngIf="notifications.length > 0; else noNotifications">
+    <button mat-menu-item *ngFor="let notification of notifications" [class.unread]="!notification.read">
+      <span>{{notification.message}}</span>
+      <span class="notification-time">{{notification.time}}</span>
+    </button>
+  </ng-container>
+  <ng-template #noNotifications>
     <button mat-menu-item disabled>No tienes notificaciones</button>
-  }
+  </ng-template>
 </mat-menu>

@@ -1,5 +1,5 @@
 export interface BidResponse {
-  id?: number;
+  id: number;
   amount: number;
   date: string;
   auction_name: string;

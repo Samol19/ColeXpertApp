@@ -1,0 +1,20 @@
+<h2 mat-dialog-title>Realizar Pago</h2>
+<mat-dialog-content>
+  <p>Estás a punto de pagar S/.{{ data.amount | number:'1.2-2' }} por la subasta "{{ data.auction.name }}".</p>
+  <mat-form-field appearance="fill">
+    <mat-label>Número de Tarjeta</mat-label>
+    <input matInput [(ngModel)]="cardNumber" placeholder="1234 5678 9012 3456" required>
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Fecha de Expiración</mat-label>
+    <input matInput [(ngModel)]="expirationDate" placeholder="MM/YY" required>
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>CVV</mat-label>
+    <input matInput [(ngModel)]="cvv" type="password" placeholder="123" required>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancelar</button>
+  <button mat-raised-button color="primary" [disabled]="!isFormValid()" (click)="onYesClick()">Pagar</button>
+</mat-dialog-actions>

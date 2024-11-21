@@ -79,16 +79,16 @@ export class CrearItemComponent implements OnInit {
   }
 
   onSubmit(): void {
+    const userid = this.storageService.getAuthData()?.user_id;
+    if (userid) {
+      this.itemForm.patchValue({ user_id: userid });
+    }
+  
     if (this.itemForm.valid) {
-      const userId = this.storageService.getAuthData()?.user_id;
-      if (userId) {
-        this.itemForm.patchValue({ user_id: userId });
-      }
-
       this.itemService.createItem(this.itemForm.value).subscribe({
         next: (response) => {
           this.showSnackBar('Ítem creado exitosamente');
-          this.router.navigate(['/home']);
+          this.router.navigate(['/home/catalog']);
         },
         error: (err) => {
           console.error(err);
@@ -119,7 +119,7 @@ export class CrearItemComponent implements OnInit {
   }
 
   salir(): void {
-    this.router.navigate(['/home']);
+    this.router.navigate(['/home/catalog']);
   }
 
   private showSnackBar(message: string): void {

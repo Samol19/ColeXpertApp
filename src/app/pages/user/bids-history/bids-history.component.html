@@ -1,25 +1,60 @@
-<div class="my-bids-container">
-  <h2>Mis Pujas</h2>
-  <div *ngIf="isLoading" class="loading">Cargando pujas...</div>
-  <div *ngIf="error" class="error">{{ error }}</div>
-  <div *ngIf="!isLoading && !error">
-    <div *ngIf="auctions.length === 0" class="no-bids">
+<div class="bids-history-container">
+  <h2 class="bids-history-title">Mis Pujas</h2>
+
+  <div *ngIf="isLoading" class="loading-spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    <mat-icon>error</mat-icon>
+    <span>{{ error }}</span>
+  </div>
+
+  <div *ngIf="!isLoading && !error" class="auctions-list">
+    <div *ngIf="auctions.length === 0" class="no-bids-message">
       No has realizado ninguna puja aún.
     </div>
-    <div *ngFor="let auction of auctions" class="auction-bid-item">
-      <app-auction-card [auction]="auction"></app-auction-card>
-      <div class="bid-info">
-        <p>Tu puja más alta: S/.{{ getHighestBid(auction.name) | number:'1.2-2' }}</p>
-        <button mat-button color="primary" (click)="toggleBids(auction.name)">
-          {{ expandedAuctions.has(auction.name) ? 'Ocultar pujas' : 'Ver pujas' }}
-        </button>
-      </div>
-      <mat-expansion-panel [expanded]="expandedAuctions.has(auction.name)">
-        <div *ngFor="let bid of getBidsForAuction(auction.name)" class="bid-detail">
-          <p>Monto: S/.{{ bid.amount | number:'1.2-2' }}</p>
-          <p>Fecha: {{ bid.date | date:'medium' }}</p>
+
+    <mat-accordion>
+      <mat-expansion-panel *ngFor="let auction of auctions">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{ auction.name }}
+          </mat-panel-title>
+          <mat-panel-description>
+            Puja más alta: S/.{{ getHighestBid(auction.name) | number:'1.2-2' }}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <div class="auction-details">
+          <app-auction-card [auction]="auction"></app-auction-card>
+
+          <div class="bid-info">
+            <h3>Tus pujas para esta subasta:</h3>
+            <ul>
+              <li *ngFor="let bid of getBidsForAuction(auction.name)">
+                <span>Monto: S/.{{ bid.amount | number:'1.2-2' }}</span>
+                <span>Fecha: {{ bid.date | date:'medium' }}</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="auction-actions">
+            <ng-container *ngIf="isAuctionWinner(auction)">
+              <ng-container *ngIf="!hasPaymentForAuction(auction)">
+                <button mat-raised-button color="primary" (click)="openPaymentDialog(auction)">Realizar Pago</button>
+              </ng-container>
+              <ng-container *ngIf="hasPaymentForAuction(auction)">
+                <p class="success-message">¡Felicidades! Has ganado esta subasta y realizado el pago. Espera a que te llegue tu item.</p>
+              </ng-container>
+            </ng-container>
+            <ng-container *ngIf="!isAuctionWinner(auction) && isAuctionEnded(auction)">
+              <p class="lost-message">Lo siento, no has ganado esta subasta.</p>
+              <button mat-button color="warn" (click)="deleteBid(getBidsForAuction(auction.name)[0])">Eliminar Puja</button>
+            </ng-container>
+          </div>
         </div>
       </mat-expansion-panel>
-    </div>
+    </mat-accordion>
   </div>
 </div>
